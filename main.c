@@ -14,6 +14,7 @@
 */
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "mlx.h"
 
 /*
@@ -39,8 +40,8 @@ typedef int				t_rgb;
 */
 typedef struct	s_window
 {
-	void		*mlx;
-	void		*ptr;
+	void	*mlx;
+	void	*ptr;
 }				t_window;
 
 /*
@@ -52,13 +53,13 @@ typedef struct	s_window
 */
 typedef struct	s_image
 {
-	void		*ptr;
-	char		*addr;
-	int			width;
-	int			height;
-	int			bits_per_pixel;
-	int			line_len;
-	int			endian;
+	void	*ptr;
+	char	*addr;
+	int		width;
+	int		height;
+	int		bits_per_pixel;
+	int		line_len;
+	int		endian;
 }				t_image;
 
 /*
@@ -207,6 +208,14 @@ void	draw_circle(t_image *img, int radius, t_rgb color)
 	}
 }
 
+int		close_window(t_window *window)
+{
+	mlx_destroy_window(window->mlx, window->ptr);
+	window->ptr = NULL;
+	exit(1);
+	return (0);
+}
+
 /*
 ** A função mlx_key_hook, chamada na main, especifica que a cada loop do mlx
 ** será chamada esta função keyboard_input que recebe como argumento uma tecla
@@ -218,10 +227,7 @@ void	draw_circle(t_image *img, int radius, t_rgb color)
 int		keyboard_input(int keycode, t_window *window)
 {
 	if (keycode == KEY_ESC)
-	{
-		mlx_destroy_window(window->mlx, window->ptr);
-		mlx_loop_end(window->mlx);
-	}
+		close_window(window);
 	return (0);
 }
 
@@ -270,6 +276,7 @@ int		main(void)
 	** anterior.
 	*/
 
+	mlx_hook(window.ptr, 33, 1L << 17, close_window, &window);
 	mlx_mouse_hook(window.ptr, mouse_track, &window);
 	mlx_key_hook(window.ptr, keyboard_input, &window);
 	mlx_loop(window.mlx);
