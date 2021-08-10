@@ -21,7 +21,6 @@ mlx_test
 
 # Libraries
 *.lib
-*.a
 *.la
 *.lo
 
